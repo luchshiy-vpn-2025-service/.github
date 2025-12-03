@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>UniVPN — VPN через Telegram-бота | быстрый VPN до 10 Гбит/с</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="UniVPN — высокоскоростной VPN до 10 Гбит/с с удобным управлением через Telegram-бота. Оплата звёздами в Telegram или по СБП, свои быстрые сервера, защита, анонимность и стабильный доступ к интернету для телефона и ПК." />
+  <meta name="keywords" content="vpn, vpn телеграм бот, vpn через telegram bot, univpn, vpn для россии, быстрый vpn, платный vpn, дешевый vpn, vpn для телефона, vpn для android, vpn для iphone, vpn для windows, vpn для macos, vpn подписка, vpn без логов, vpn для работы, vpn для игр" />
+
+  <!-- OPEN GRAPH -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="UniVPN — VPN через Telegram-бота">
+  <meta property="og:description" content="Высокоскоростной VPN до 10 Гбит/с. Оплата звёздами в Telegram или по СБП. Свои быстрые сервера и удобное управление в боте.">
+  <!-- заменишь на реальный домен -->
+  <meta property="og:image" content="https://your-domain.com/univpn-logo.jpg">
+  <meta property="og:url" content="https://your-domain.com/">
+
+  <!-- STRUCTURED DATA: ORGANIZATION -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "UniVPN",
+    "url": "https://your-domain.com/",
+    "logo": "https://your-domain.com/univpn-logo.jpg",
+    "description": "UniVPN — высокоскоростной VPN до 10 Гбит/с с управлением через Telegram-бота. Оплата звёздами в Telegram и по СБП, свои быстрые сервера и удобные тарифы.",
+    "sameAs": [
+      "https://gloriaurl.cfd/s/nstart"
+    ]
+  }
+  </script>
+
+  <!-- STRUCTURED DATA: FAQ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Что такое UniVPN?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "UniVPN — это высокоскоростной VPN-сервис до 10 Гбит/с с удобным управлением через Telegram-бота. Вы покупаете месячную подписку за 50 звёзд Telegram или оплачиваете 75 рублей по СБП и получаете доступ к собственным быстрым серверам."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Как купить VPN через Telegram-бота UniVPN?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Запустите Telegram-бота UniVPN по ссылке, выберите месячный тариф, оплатите 50 звёзд Telegram или 75 рублей по СБП и получите конфигурацию для подключения. Все действия происходят прямо в боте за пару минут."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Есть ли пробный период в UniVPN?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Да, вы можете активировать пробную подписку на 3 дня с промокодом START. Промокод вводится внутри Telegram-бота UniVPN."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "На какие устройства можно установить UniVPN?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Вы можете использовать UniVPN на телефонах Android и iOS, а также на ноутбуках и ПК с Windows и macOS. В боте есть инструкции по подключению для популярных клиентов."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg-main: #020617;
+      --bg-card: #02081f;
+      --bg-soft: #020314;
+      --accent: #3b82f6;
+      --accent-soft: rgba(59,130,246,0.15);
+      --accent-strong: #2563eb;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border-soft: rgba(148,163,184,0.25);
+      --radius-xl: 24px;
+      --shadow-soft: 0 18px 40px rgba(15,23,42,0.85);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #0b1120 0, #020617 55%, #000 100%);
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(16px);
+      background: rgba(2,6,23,0.96);
+      border-bottom: 1px solid rgba(15,23,42,0.9);
+      transition: box-shadow 0.2s ease-out;
+      transform: translateZ(0);
+    }
+
+    header.is-scrolled {
+      box-shadow: 0 12px 35px rgba(15,23,42,0.95);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 0;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .logo-wrap {
+      width: 42px;
+      height: 42px;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(148,163,184,0.5);
+      box-shadow: 0 0 0 2px rgba(15,23,42,0.9);
+      background: radial-gradient(circle at 30% 10%, #1d4ed8, #020617);
+      flex-shrink: 0;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-title {
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      font-size: 14px;
+      color: var(--text-muted);
+      flex: 1;
+      justify-content: center;
+    }
+
+    .nav-links a {
+      position: relative;
+      padding-bottom: 2px;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 2px;
+      width: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg,#38bdf8,#a855f7,#f97316);
+      transition: width 0.18s ease-out;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-main);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s ease-out;
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #f9fafb;
+      box-shadow: 0 10px 25px rgba(37,99,235,0.45);
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px) scale(1.01);
+      box-shadow: 0 14px 35px rgba(37,99,235,0.65);
+      background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+    }
+
+    .btn-outline {
+      background: rgba(15,23,42,0.9);
+      color: var(--text-main);
+      border-color: rgba(148,163,184,0.7);
+      box-shadow: none;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      background: rgba(15,23,42,1);
+    }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 999px;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 18px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--text-main);
+      transition: transform 0.18s ease-out, opacity 0.18s ease-out;
+    }
+
+    .nav-toggle span + span {
+      margin-top: 4px;
+    }
+
+    .nav-toggle.open span:nth-child(1) {
+      transform: translateY(6px) rotate(45deg);
+    }
+
+    .nav-toggle.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle.open span:nth-child(3) {
+      transform: translateY(-6px) rotate(-45deg);
+    }
+
+    main {
+      flex: 1;
+    }
+
+    /* HERO */
+
+    .hero {
+      padding: 32px 0 40px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      align-items: center;
+      gap: 32px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--accent-soft);
+      background: rgba(15,23,42,0.9);
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #22c55e, #166534);
+      box-shadow: 0 0 0 4px rgba(34,197,94,0.18);
+    }
+
+    .hero-title {
+      font-size: clamp(26px, 4vw, 34px);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 12px;
+    }
+
+    .hero-highlight {
+      background: linear-gradient(120deg, #38bdf8, #a855f7, #f97316);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .nowrap {
+      white-space: nowrap;
+    }
+
+    .hero-subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 540px;
+      margin-bottom: 18px;
+    }
+
+    .hero-bullets {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 18px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .hero-bullet {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      color: var(--text-muted);
+    }
+
+    .hero-bullet span {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .hero-note {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .hero-note strong {
+      color: #e5e7eb;
+    }
+
+    .hero-right {
+      position: relative;
+    }
+
+    .hero-card {
+      border-radius: 28px;
+      padding: 20px 18px;
+      background: radial-gradient(circle at top left, #1d4ed8 0, #020617 40%, #020617 100%);
+      border: 1px solid rgba(59,130,246,0.55);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 12% -10%, rgba(56,189,248,0.18), transparent 60%),
+        radial-gradient(circle at 90% 110%, rgba(244,114,182,0.18), transparent 60%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .hero-card-inner {
+      position: relative;
+      display: grid;
+      grid-template-columns: 110px minmax(0, 1fr);
+      gap: 18px;
+      align-items: center;
+    }
+
+    .hero-avatar-wrap {
+      background: rgba(15,23,42,0.85);
+      border-radius: 999px;
+      padding: 10px;
+      border: 1px solid rgba(148,163,184,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-avatar-wrap img {
+      border-radius: 999px;
+    }
+
+    .hero-card-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .hero-card-sub {
+      font-size: 13px;
+      color: #e5e7eb;
+      margin-bottom: 10px;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 11px;
+    }
+
+    .hero-tag {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.75);
+      border: 1px solid rgba(148,163,184,0.55);
+    }
+
+    .hero-mini {
+      position: relative;
+      margin-top: 10px;
+      font-size: 11px;
+      color: #e5e7eb;
+      opacity: 0.9;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    /* SECTIONS */
+
+    section {
+      padding: 30px 0;
+      scroll-margin-top: 80px; /* чтобы якоря не уезжали под шапку */
+    }
+
+    .section-header {
+      margin-bottom: 20px;
+    }
+
+    .section-kicker {
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .section-sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 580px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top, var(--bg-card), var(--bg-soft));
+      border-radius: var(--radius-xl);
+      padding: 16px 16px 14px;
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 16px 32px rgba(15,23,42,0.75);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at 0 0, rgba(59,130,246,0.18), transparent 55%);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .card-label {
+      font-size: 11px;
+      color: var(--accent);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .card-text {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .step {
+      border-radius: var(--radius-xl);
+      padding: 12px 12px 10px;
+      border: 1px dashed rgba(148,163,184,0.55);
+      background: radial-gradient(circle at top, #020617, #020314);
+      font-size: 13px;
+    }
+
+    .step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .step-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .tariffs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .tariff {
+      border-radius: var(--radius-xl);
+      padding: 16px 16px 14px;
+      border: 1px solid var(--border-soft);
+      background: radial-gradient(circle at top, #020617, #020314);
+      box-shadow: 0 16px 32px rgba(15,23,42,0.85);
+      position: relative;
+    }
+
+    .tariff-popular {
+      border-color: var(--accent);
+      box-shadow: 0 20px 40px rgba(37,99,235,0.7);
+    }
+
+    .tariff-badge {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .tariff-name {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .tariff-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .tariff-price {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .tariff-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .tariff ul {
+      list-style: none;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .tariff li::before {
+      content: "•";
+      color: var(--accent);
+      margin-right: 6px;
+    }
+
+    .tariff .btn {
+      width: 100%;
+      padding-top: 9px;
+      padding-bottom: 9px;
+      font-size: 13px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      font-size: 11px;
+    }
+
+    .pill {
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      color: var(--text-muted);
+    }
+
+    .faq-list {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+      gap: 20px;
+    }
+
+    .faq-items {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    details {
+      border-radius: 18px;
+      border: 1px solid var(--border-soft);
+      background: radial-gradient(circle at top, #020617, #020314);
+      padding: 9px 11px;
+      font-size: 13px;
+    }
+
+    details summary {
+      list-style: none;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details[open] {
+      border-color: var(--accent);
+    }
+
+    details p {
+      margin-top: 6px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .faq-aside {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .faq-aside strong {
+      color: var(--text-main);
+    }
+
+    .seo-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      max-width: 900px;
+    }
+
+    .seo-text h2 {
+      font-size: 16px;
+      margin: 14px 0 6px;
+      color: var(--text-main);
+    }
+
+    .seo-text p {
+      margin-bottom: 8px;
+    }
+
+    footer {
+      border-top: 1px solid rgba(15,23,42,0.95);
+      padding: 16px 0 18px;
+      background: #020617;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+    }
+
+    .footer-links a:hover {
+      color: var(--text-main);
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 960px) {
+      .hero-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .hero {
+        padding-top: 26px;
+      }
+      .features-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .steps-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .tariffs-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .faq-list {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      header {
+        padding-bottom: 4px;
+      }
+
+      .nav {
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .brand-sub {
+        display: none;
+      }
+
+      .nav-links {
+        display: none;
+        width: 100%;
+        justify-content: flex-start;
+        margin-top: 6px;
+        border-top: 1px solid rgba(15,23,42,0.9);
+        padding-top: 6px;
+      }
+
+      .nav-links.nav-open {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 13px;
+      }
+
+      /* в моб шапке оставляем только "Открыть бота" + бургер, без доп. кнопки */
+      .nav-cta .btn-outline {
+        display: none;
+      }
+
+      .nav-toggle {
+        display: inline-flex;
+      }
+
+      .hero {
+        padding-top: 22px;
+      }
+
+      .hero-title {
+        font-size: 24px;
+        line-height: 1.25;
+      }
+
+      .hero-bullets {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .hero-card-inner {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .features-grid,
+      .steps-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .card,
+      .tariff,
+      .step {
+        padding: 14px 13px 12px;
+      }
+
+      .hero-mini {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header id="site-header">
+    <div class="container">
+      <nav class="nav">
+        <div class="nav-left">
+          <div class="logo-wrap">
+            <!-- логотип лежит в той же директории, что и index.html -->
+            <img src="./univpn-logo.jpg" alt="UniVPN — VPN через Telegram-бота" loading="lazy">
+          </div>
+          <div class="brand">
+            <div class="brand-title">UNIVPN</div>
+            <div class="brand-sub">VPN через Telegram-бота • до 10 Гбит/с</div>
+          </div>
+        </div>
+
+        <div class="nav-links" id="nav-links">
+          <a href="#benefits">Преимущества</a>
+          <a href="#how-it-works">Как работает</a>
+          <a href="#tariffs">Тарифы</a>
+          <a href="#faq">FAQ</a>
+        </div>
+
+        <div class="nav-cta">
+          <a class="btn-outline" href="#tariffs">Тарифы</a>
+          <a class="btn" href="https://gloriaurl.cfd/s/nstart" target="_blank" rel="noopener">Открыть бота</a>
+          <button class="nav-toggle" id="nav-toggle" aria-label="Меню">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="hero">
+      <div class="container">
+        <div class="hero-grid">
+          <div class="hero-left">
+            <div class="badge">
+              <span class="badge-dot"></span>
+              <span>VPN через Telegram-бота • UniVPN</span>
+            </div>
+
+            <h1 class="hero-title">
+              Высокоскоростной VPN<br>
+              <span class="hero-highlight">до <span class="nowrap">10&nbsp;Гбит/с</span></span><br>
+              с управлением через Telegram-бота
+            </h1>
+
+            <p class="hero-subtitle">
+              UniVPN — быстрый и стабильный VPN-сервис со своими серверами и удобным управлением в боте.
+              Месячная подписка всего за 50 звёзд в Telegram или 75 рублей по СБП — подключайте телефон и ноутбук за пару минут.
+            </p>
+
+            <div class="hero-bullets">
+              <div class="hero-bullet">
+                <span>✓</span>
+                <div>Собственные быстрые сервера и скорость до 10 Гбит/с для комфортной работы и отдыха.</div>
+              </div>
+              <div class="hero-bullet">
+                <span>✓</span>
+                <div>Управление VPN полностью через Telegram-бота — без регистрации и лишних кабинетов.</div>
+              </div>
+              <div class="hero-bullet">
+                <span>✓</span>
+                <div>Оплата 50 звёзд Telegram или 75 ₽ по СБП — удобно с любых устройств.</div>
+              </div>
+              <div class="hero-bullet">
+                <span>✓</span>
+                <div>Поддержка популярных клиентов на Android, iOS, Windows и macOS.</div>
+              </div>
+            </div>
+
+            <div class="hero-cta-row">
+              <a class="btn" href="https://gloriaurl.cfd/s/nstart" target="_blank" rel="noopener">
+                Открыть UniVPN в Telegram
+              </a>
+              <a class="btn-outline" href="#how-it-works">Как это работает</a>
+            </div>
+
+            <p class="hero-note">
+              ⚡ <strong>UniVPN:</strong> защита, анонимность и свобода в сети — без компромиссов.
+            </p>
+          </div>
+
+          <div class="hero-right">
+            <div class="hero-card">
+              <div class="hero-card-inner">
+                <div class="hero-avatar-wrap">
+                  <img src="./univpn-logo.jpg" alt="Аватар UniVPN" loading="lazy">
+                </div>
+                <div>
+                  <div class="hero-card-title">UniVPN • Telegram-бот</div>
+                  <div class="hero-card-sub">
+                    Запустите бота, введите промокод <strong>START</strong> для 3 дней доступа,
+                    а затем оформите месячную подписку в один клик.
+                  </div>
+                  <div class="hero-tags">
+                    <span class="hero-tag">до 10 Гбит/с</span>
+                    <span class="hero-tag">50 звёзд в месяц</span>
+                    <span class="hero-tag">75 ₽ по СБП</span>
+                    <span class="hero-tag">промокод START — 3 дня</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="hero-mini">
+                <span>VPN телеграм бот • быстрый vpn для телефона и ПК</span>
+                <span>Без лишних приложений — всё в Telegram</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BENEFITS -->
+    <section id="benefits">
+      <div class="container">
+        <header class="section-header">
+          <div class="section-kicker">Почему UniVPN</div>
+          <h2 class="section-title">VPN-сервис, который удобно использовать каждый день</h2>
+          <p class="section-sub">
+            UniVPN сочетает высокую скорость, простое подключение через Telegram-бота и понятный месячный тариф.
+            Это надёжный вариант VPN для России, поездок, работы и личных задач.
+          </p>
+        </header>
+
+        <div class="features-grid">
+          <article class="card">
+            <div class="card-label">Скорость</div>
+            <h3 class="card-title">Собственные сервера до 10 Гбит/с</h3>
+            <p class="card-text">
+              Мы используем собственную инфраструктуру, а не перепродажу чужих серверов.
+              Это даёт стабильный пинг и быстрый VPN для игр, работы с файлами и стриминга.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="card-label">Удобство</div>
+            <h3 class="card-title">Управление VPN через Telegram-бота</h3>
+            <p class="card-text">
+              Весь контроль подписки — прямо в Telegram: запуск бота, активация промокода START,
+              оплата месяцa и управление устройствами.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="card-label">Простой тариф</div>
+            <h3 class="card-title">50 звёзд или 75 ₽ в месяц</h3>
+            <p class="card-text">
+              Всего один понятный месячный тариф UniVPN: оплачивайте 50 звёзд Telegram или 75 рублей по СБП —
+              без скрытых условий и лишних опций.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="card-label">Мультиплатформа</div>
+            <h3 class="card-title">Телефон, планшет и ноутбук</h3>
+            <p class="card-text">
+              UniVPN подходит для Android и iOS, а также для Windows и macOS.
+              В боте есть понятные инструкции по подключению клиентов.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="card-label">Безопасность</div>
+            <h3 class="card-title">Шифрование и защита трафика</h3>
+            <p class="card-text">
+              Мы используем современные протоколы и шифрование для защиты данных
+              при работе в общественных сетях Wi-Fi и на домашнем интернете.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="card-label">Поддержка</div>
+            <h3 class="card-title">Помощь прямо в Telegram</h3>
+            <p class="card-text">
+              Если что-то пошло не так при подключении VPN, просто напишите в поддержку через бота.
+              Ответим и поможем настроить UniVPN на вашем устройстве.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how-it-works">
+      <div class="container">
+        <header class="section-header">
+          <div class="section-kicker">Как работает</div>
+          <h2 class="section-title">Подключите VPN через Telegram-бота за 4 шага</h2>
+          <p class="section-sub">
+            Никаких сложных регистраций. Чтобы начать пользоваться UniVPN, достаточно запустить Telegram-бота
+            и следовать подсказкам.
+          </p>
+        </header>
+
+        <div class="steps-grid">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-title">Запустите бота UniVPN</div>
+            <p>Перейдите по ссылке на Telegram-бота UniVPN и нажмите «Start». Бот подскажет, как активировать VPN.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-title">Введите промокод START</div>
+            <p>Используйте промокод <strong>START</strong>, чтобы получить пробную подписку на 3 дня и проверить качество связи.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-title">Оформите месячный доступ</div>
+            <p>Выберите основной тариф: 50 звёзд Telegram или 75 рублей по СБП за месяц UniVPN. Оплата занимает пару секунд.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-title">Подключите устройство</div>
+            <p>Получите конфигурацию и инструкцию для вашего устройства (Android, iOS, Windows, macOS) и включите UniVPN.</p>
+          </div>
+        </div>
+
+        <div class="pill-row">
+          <span class="pill">vpn телеграм бот</span>
+          <span class="pill">vpn через telegram bot</span>
+          <span class="pill">как подключить vpn для телефона</span>
+          <span class="pill">vpn для ноутбука</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- TARIFFS -->
+    <section id="tariffs">
+      <div class="container">
+        <header class="section-header">
+          <div class="section-kicker">Тариф</div>
+          <h2 class="section-title">Простой тариф UniVPN без скрытых условий</h2>
+          <p class="section-sub">
+            Один понятный месячный тариф и промокод на пробный доступ. Все детали по оплате вы увидите прямо в боте перед подтверждением.
+          </p>
+        </header>
+
+        <div class="tariffs-grid">
+          <article class="tariff">
+            <h3 class="tariff-name">Промокод START</h3>
+            <p class="tariff-desc">Проверьте скорость и стабильность UniVPN перед покупкой месячной подписки.</p>
+            <div class="tariff-price">3 дня VPN бесплатно*</div>
+            <div class="tariff-note">*доступ по промокоду <strong>START</strong> внутри Telegram-бота UniVPN.</div>
+            <ul>
+              <li>Полный доступ к серверам</li>
+              <li>Скорость до 10 Гбит/с</li>
+              <li>Инструкции для всех устройств</li>
+            </ul>
+            <a class="btn" href="https://gloriaurl.cfd/s/nstart" target="_blank" rel="noopener">Активировать промокод в боте</a>
+          </article>
+
+          <article class="tariff tariff-popular">
+            <div class="tariff-badge">Основной тариф</div>
+            <h3 class="tariff-name">Месяц UniVPN</h3>
+            <p class="tariff-desc">Один месяц стабильного VPN-соединения для телефона и ноутбука.</p>
+            <div class="tariff-price">50 звёзд или 75 ₽</div>
+            <div class="tariff-note">Оплата 50 Telegram Stars или 75 рублей по СБП — выбирайте удобный способ в боте.</div>
+            <ul>
+              <li>Доступ до 3 устройств</li>
+              <li>Высокая скорость и стабильный пинг</li>
+              <li>Инструкции для Android, iOS, Windows, macOS</li>
+              <li>Поддержка в Telegram</li>
+            </ul>
+            <a class="btn" href="https://gloriaurl.cfd/s/nstart" target="_blank" rel="noopener">Оформить месяц UniVPN</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="container">
+        <header class="section-header">
+          <div class="section-kicker">FAQ</div>
+          <h2 class="section-title">Частые вопросы про VPN и UniVPN</h2>
+          <p class="section-sub">
+            Собрали ответы на самые популярные запросы: какой VPN выбрать в 2025, как работает VPN телеграм бот,
+            как оплачивать VPN звёздами и по СБП.
+          </p>
+        </header>
+
+        <div class="faq-list">
+          <div class="faq-items">
+            <details open>
+              <summary>Что такое UniVPN и чем он отличается от других VPN?</summary>
+              <p>
+                UniVPN — это высокоскоростной VPN-сервис до 10 Гбит/с с удобным управлением через Telegram-бота.
+                Вместо сложных кабинетов у вас один бот, в котором настраиваются промокод, оплата и доступ для устройств.
+              </p>
+            </details>
+
+            <details>
+              <summary>Какой тариф есть у UniVPN?</summary>
+              <p>
+                Основной тариф — месячная подписка UniVPN за 50 звёзд Telegram или 75 рублей при оплате по СБП.
+                Перед покупкой вы можете протестировать сервис по промокоду <strong>START</strong>, который даёт 3 дня доступа.
+              </p>
+            </details>
+
+            <details>
+              <summary>Как купить VPN через Telegram-бота UniVPN?</summary>
+              <p>
+                Перейдите к боту UniVPN по ссылке, нажмите «Start», при желании активируйте промокод START,
+                затем выберите месячный тариф и оплатите 50 звёзд или 75 ₽ по СБП. После успешной оплаты бот пришлёт конфигурацию
+                и инструкцию по подключению VPN для вашего устройства.
+              </p>
+            </details>
+
+            <details>
+              <summary>Можно ли использовать один аккаунт UniVPN на нескольких устройствах?</summary>
+              <p>
+                Да, месячный тариф рассчитан до 3 устройств. Точные ограничения вы увидите в описании тарифа внутри бота.
+              </p>
+            </details>
+
+            <details>
+              <summary>Подходит ли UniVPN для работы, учёбы и поездок?</summary>
+              <p>
+                UniVPN отлично подходит для повседневной работы, удалённых задач, учёбы и путешествий.
+                VPN помогает защитить трафик в общественных сетях Wi-Fi и обеспечивает стабильный доступ к вашим сервисам.
+              </p>
+            </details>
+          </div>
+
+          <div class="faq-aside">
+            <p>
+              UniVPN — это <strong>vpn телеграм бот</strong>, созданный для тех, кто хочет простой и быстрый
+              vpn для телефона, ноутбука и планшета. Вам не нужно искать отдельные программы:
+              достаточно запустить бота и выбрать месячный тариф.
+            </p>
+            <p>
+              Если вы не уверены, <strong>какой vpn выбрать в 2025 году</strong> для России и поездок,
+              начните с промокода <strong>START</strong>, протестируйте соединение в течение 3 дней,
+              а затем оформите месячную подписку UniVPN.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEO TEXT BLOCK -->
+    <section id="seo">
+      <div class="container">
+        <div class="seo-text">
+          <h2>UniVPN — быстрый VPN для России, работы и путешествий</h2>
+          <p>
+            Многие пользователи ищут надёжный <strong>vpn для россии</strong>, который будет стабильно работать
+            на телефоне и ноутбуке, без сложной регистрации и привязки к отдельным кабинетам.
+            UniVPN решает эту задачу за счёт управления через Telegram-бота — это простой и понятный формат,
+            к которому уже привыкли миллионы пользователей.
+          </p>
+          <p>
+            Благодаря собственным серверам UniVPN обеспечивает <strong>быстрый vpn</strong> со скоростью до 10 Гбит/с.
+            Сервис подойдёт тем, кому важна защита соединения в общественных сетях Wi-Fi,
+            стабильная работа с файлами, мессенджерами и онлайн-сервисами.
+            Если вы ищете <strong>vpn для телефона</strong>, планшета или компьютера,
+            UniVPN предлагает удобные инструкции для Android, iOS, Windows и macOS.
+          </p>
+          <p>
+            Формат <strong>vpn через telegram bot</strong> позволяет моментально пополнить или продлить подписку:
+            вы просто выбираете месячный тариф и оплачиваете VPN за 50 звёзд в Telegram или 75 рублей по СБП.
+            Такой подход экономит время и избавляет от лишних действий — всё нужное уже есть в вашем мессенджере.
+          </p>
+          <p>
+            Независимо от того, нужен ли вам <strong>vpn для работы</strong>, учёбы, путешествий
+            или просто для комфортного ежедневного пользования интернетом, UniVPN станет удобным выбором.
+            Попробуйте сервис с промокодом START, оцените качество связи и уже потом переходите на полную месячную подписку.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div>© <span id="year"></span> UniVPN. Все права защищены.</div>
+        <div class="footer-links">
+          <a href="#hero">Наверх</a>
+          <a href="https://gloriaurl.cfd/s/nstart" target="_blank" rel="noopener">Открыть бота UniVPN</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  // год в футере
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // мягкая тень у шапки при скролле
+  const header = document.getElementById("site-header");
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 12) {
+      header.classList.add("is-scrolled");
+    } else {
+      header.classList.remove("is-scrolled");
+    }
+  });
+
+  // мобильное меню
+  const navToggle = document.getElementById("nav-toggle");
+  const navLinks = document.getElementById("nav-links");
+
+  navToggle.addEventListener("click", () => {
+    navToggle.classList.toggle("open");
+    navLinks.classList.toggle("nav-open");
+  });
+</script>
+</body>
+</html>
